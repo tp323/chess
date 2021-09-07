@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -20,38 +20,59 @@ import androidx.compose.ui.window.application
 private val FIRSTCOLOR = Color.LightGray
 private val SECONDCOLOR = Color.Black
 
-@Composable
-@Preview
-fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
+// 'a' -> king
+// CAPS -> WHITE
+private var BOARD = Array(8) { CharArray(8) }
 
-    DesktopMaterialTheme {
-        Button(onClick = {
-            text = "Hello, Desktop!"
-        }) {
-            Text(text)
-        }
-    }
+fun inicialBoard() {
+
+    BOARD[0] = charArrayOf('r','k','b','q','a','b','k','r')
+    BOARD[1] = charArrayOf('p','p','p','p','p','p','p','p')
+
+    for(n in 2..5) BOARD[n] = charArrayOf(' ',' ',' ',' ',' ',' ',' ',' ')
+
+    BOARD[6] = charArrayOf('P','P','P','P','P','P','P','P')
+    BOARD[7] = charArrayOf('R','K','B','Q','A','B','K','R')
+
 }
+
+fun printBoard(){
+    for(x in 0..7){
+        println("   +---+---+---+---+---+---+---+---+")
+        print("" + (8-x) + "  | ")
+        for(y in 0..7){
+            print(BOARD[x][y] + " | ")
+        }
+        println("")
+    }
+    println("   +---+---+---+---+---+---+---+---+")
+    println("     a   b   c   d   e   f   g   h")
+
+}
+
+fun printBoardSmall(){
+    for(x in 0..7){
+        print("" + (8-x) + "  | ")
+        for(y in 0..7){
+            print(BOARD[x][y] + " | ")
+        }
+        println("")
+    }
+    println("     a   b   c   d   e   f   g   h")
+
+}
+
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
+    //remove comments in main to run UI
+    //Window(onCloseRequest = ::exitApplication) {
         //App()
-        //MatchParentSizeComposable()
-        board()
-    }
+        inicialBoard()
+        printBoardSmall()
+        //board()
+    //}
 }
 
-@Composable
-fun grid(name: String){
-    Row(verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End) {
-        Column {
-            Text("Hello")
-            Text(name)
-        }
-    }
-}
 
 @Composable
 fun board() {
@@ -76,4 +97,6 @@ fun board() {
         }
     }
 }
+
+
 
