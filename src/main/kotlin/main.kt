@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
+import java.util.Scanner
+
 private val FIRSTCOLOR = Color.LightGray
 private val SECONDCOLOR = Color.Black
 
@@ -25,7 +27,6 @@ private val SECONDCOLOR = Color.Black
 private var BOARD = Array(8) { CharArray(8) }
 
 fun inicialBoard() {
-
     BOARD[0] = charArrayOf('r','k','b','q','a','b','k','r')
     BOARD[1] = charArrayOf('p','p','p','p','p','p','p','p')
 
@@ -33,7 +34,6 @@ fun inicialBoard() {
 
     BOARD[6] = charArrayOf('P','P','P','P','P','P','P','P')
     BOARD[7] = charArrayOf('R','K','B','Q','A','B','K','R')
-
 }
 
 fun printBoard(){
@@ -47,7 +47,6 @@ fun printBoard(){
     }
     println("   +---+---+---+---+---+---+---+---+")
     println("     a   b   c   d   e   f   g   h")
-
 }
 
 fun printBoardSmall(){
@@ -59,16 +58,17 @@ fun printBoardSmall(){
         println("")
     }
     println("     a   b   c   d   e   f   g   h")
-
 }
 
 
 fun main() = application {
+    val input = Scanner(System.`in`)
     //remove comments in main to run UI
     //Window(onCloseRequest = ::exitApplication) {
         //App()
         inicialBoard()
         printBoardSmall()
+        //round()
         //board()
     //}
 }
@@ -85,7 +85,6 @@ fun board() {
                 for (i in 1..8) {
                     colorSquare = if (!squarepair) FIRSTCOLOR
                     else SECONDCOLOR
-
                     Box {
                         Spacer(Modifier.size(50.dp).background(colorSquare)
                                 .clickable(onClick = { }))
@@ -98,5 +97,46 @@ fun board() {
     }
 }
 
+fun selectPiece(){
 
+}
 
+fun checkPiece(n: Int, l: Char): Char{
+    val y = Character.getNumericValue(l+1)-Character.getNumericValue('a')
+    return BOARD[n][y]
+}
+
+fun round(){
+    val position = getPosition()
+
+}
+
+fun algebraicNotation(position: String){
+    val pastPos = position.subSequence(0, 1)
+    //TODO: CHECK IF PIECE THERE AND TO WICH POSITIONS IT CAN MOVE
+
+    val nextPos = position.subSequence(3, 4)
+
+}
+
+fun getPosition(): String{
+    var position = ""
+    do{
+        position = readLine()!!
+    }while(position.length!=5 && isChar(position[0]) && isInt(position[1]) && isChar(position[3]) && isInt(position[4]))
+    //working for Algebraic Notation only (for now)
+    return position
+}
+
+fun isChar(c: Char): Boolean{
+    return c in 'A'..'Z' || c in 'a'..'z'
+}
+
+fun isInt(n: Char): Boolean{
+    return n in '0'..'9'
+}
+
+fun isEmpty(pos: String): Boolean {
+    val n = (pos[1]).code - '0'.code
+    return checkPiece(n,pos[0]) == ' '
+}
