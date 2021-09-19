@@ -1,20 +1,10 @@
-import androidx.compose.desktop.DesktopMaterialTheme
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
 import java.util.Scanner
@@ -27,20 +17,20 @@ private val SECONDCOLOR = Color.Black
 private var BOARD = Array(8) { CharArray(8) }
 
 fun inicialBoard() {
-    BOARD[0] = charArrayOf('r','k','b','q','a','b','k','r')
-    BOARD[1] = charArrayOf('p','p','p','p','p','p','p','p')
+    BOARD[7] = charArrayOf('r','k','b','q','a','b','k','r')
+    BOARD[6] = charArrayOf('p','p','p','p','p','p','p','p')
 
     for(n in 2..5) BOARD[n] = charArrayOf(' ',' ',' ',' ',' ',' ',' ',' ')
 
-    BOARD[6] = charArrayOf('P','P','P','P','P','P','P','P')
-    BOARD[7] = charArrayOf('R','K','B','Q','A','B','K','R')
+    BOARD[1] = charArrayOf('P','P','P','P','P','P','P','P')
+    BOARD[0] = charArrayOf('R','K','B','Q','A','B','K','R')
 }
 
 fun printBoard(){
     for(x in 0..7){
         println("   +---+---+---+---+---+---+---+---+")
         print("" + (8-x) + "  | ")
-        for(y in 0..7){
+        for(y in 7 downTo 1){
             print(BOARD[x][y] + " | ")
         }
         println("")
@@ -50,8 +40,8 @@ fun printBoard(){
 }
 
 fun printBoardSmall(){
-    for(x in 0..7){
-        print("" + (8-x) + "  | ")
+    for(x in 7 downTo 0){
+        print("" + (1+x) + "  | ")
         for(y in 0..7){
             print(BOARD[x][y] + " | ")
         }
@@ -68,7 +58,8 @@ fun main() = application {
         //App()
         inicialBoard()
         printBoardSmall()
-        //round()
+        round()
+        printBoardSmall()
         //board()
     //}
 }
@@ -103,20 +94,46 @@ fun selectPiece(){
 
 fun checkPiece(n: Int, l: Char): Char{
     val y = Character.getNumericValue(l+1)-Character.getNumericValue('a')
-    return BOARD[n][y]
+    val d = BOARD[n-1][y]
+    return BOARD[n-1][y]
 }
 
 fun round(){
-    val position = getPosition()
+    algebraicNotation(getPosition())
 
 }
 
 fun algebraicNotation(position: String){
-    val pastPos = position.subSequence(0, 1)
-    //TODO: CHECK IF PIECE THERE AND TO WICH POSITIONS IT CAN MOVE
+    val pastPos = "" + position.subSequence(0, 2)
 
-    val nextPos = position.subSequence(3, 4)
+    if(isEmpty(pastPos)) {
+        println("Can't Print")
+        return
+    }
+    //TODO: CHECK IF PIECE THERE AND TO WHICH POSITIONS IT CAN MOVE
+    //check if piece from current player
 
+    val nextPos = "" + position.subSequence(3, 5)
+
+    move(pastPos,nextPos)
+}
+
+fun move(pastPos: String, nextPos: String) {
+    val yPastPos = Character.getNumericValue(pastPos[0])-Character.getNumericValue('a')
+    val xPastPos = (pastPos[1]) - '1'
+
+    val piece = BOARD[xPastPos][yPastPos]
+    BOARD[xPastPos][yPastPos] = ' '
+
+    val yNextPos = Character.getNumericValue(nextPos[0])-Character.getNumericValue('a')
+    val xNextPos = (nextPos[1]) - '1'
+
+    BOARD[xNextPos][yNextPos] = piece
+}
+
+fun checkValidPlay(piece: Char, pastPos: String, nextPos: String): Boolean{
+
+    return false
 }
 
 fun getPosition(): String{
@@ -137,6 +154,11 @@ fun isInt(n: Char): Boolean{
 }
 
 fun isEmpty(pos: String): Boolean {
-    val n = (pos[1]).code - '0'.code
+    val n = (pos[1]) - '0'
     return checkPiece(n,pos[0]) == ' '
+}
+
+fun onlyLowerCase(char: Char): Char{
+    //TODO convert if UPPER CASE to lower case
+    return char
 }
