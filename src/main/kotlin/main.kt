@@ -1,16 +1,22 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
 import java.util.Scanner
 
 private val FIRSTCOLOR = Color.LightGray
-private val SECONDCOLOR = Color.Black
+private val SECONDCOLOR = Color.DarkGray
 
 // 'a' -> king
 // CAPS -> WHITE
@@ -50,20 +56,17 @@ fun printBoardSmall(){
     println("     a   b   c   d   e   f   g   h")
 }
 
-
 fun main() = application {
     val input = Scanner(System.`in`)
     //remove comments in main to run UI
-    //Window(onCloseRequest = ::exitApplication) {
-        //App()
+    Window(onCloseRequest = ::exitApplication) {
         inicialBoard()
+        board()
         printBoardSmall()
-        round()
-        printBoardSmall()
-        //board()
-    //}
+        //round()
+        //printBoardSmall()
+    }
 }
-
 
 @Composable
 fun board() {
@@ -77,14 +80,45 @@ fun board() {
                     colorSquare = if (!squarepair) FIRSTCOLOR
                     else SECONDCOLOR
                     Box {
-                        Spacer(Modifier.size(50.dp).background(colorSquare)
-                                .clickable(onClick = { }))
+                        Spacer(Modifier.size(65.dp).background(colorSquare)
+                            .clickable(onClick = { })
+                        )
+                        if (BOARD[n-1][i-1] != ' ') {
+                            Image(
+                                painter = painterResource("Chess_rdt60.png"),
+                                contentDescription = "image"//,
+                                //contentScale = ContentScale.FillBounds
+                            )
+                        }
                     }
                     squarepair =!squarepair
                 }
                 squarepair =!squarepair
             }
         }
+/*
+        val imageModifier = Modifier
+            .height(240.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+
+        Image(bitmap = useResource("image.png") { loadImageBitmap(it) },
+            "image",
+            imageModifier,
+            contentScale = ContentScale.Fit)*/
+
+
+        /*val imageModifier = Modifier
+            .height(240.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+
+        Image(painter = painterResource("image.png"),
+            contentDescription = "image",
+            imageModifier,
+            contentScale = ContentScale.Fit
+        )*/
+
     }
 }
 
@@ -158,7 +192,10 @@ fun isEmpty(pos: String): Boolean {
     return checkPiece(n,pos[0]) == ' '
 }
 
-fun onlyLowerCase(char: Char): Char{
-    //TODO convert if UPPER CASE to lower case
-    return char
+fun isUpperCase(c: Char): Boolean{
+    return c in 'A'..'Z'
+}
+
+fun convertToLowerCase(char: Char): Char {
+    return char + 32
 }
