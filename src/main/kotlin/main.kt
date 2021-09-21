@@ -2,12 +2,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -15,21 +12,25 @@ import androidx.compose.ui.window.application
 
 import java.util.Scanner
 
-private val FIRSTCOLOR = Color.LightGray
-private val SECONDCOLOR = Color.DarkGray
+private val FIRST_COLOR = Color.LightGray
+private val SECOND_COLOR = Color.DarkGray
 
 // 'a' -> king
 // CAPS -> WHITE
 private var BOARD = Array(8) { CharArray(8) }
 
-fun inicialBoard() {
-    BOARD[7] = charArrayOf('r','k','b','q','a','b','k','r')
-    BOARD[6] = charArrayOf('p','p','p','p','p','p','p','p')
+private val LOWER_CASE_LETTERS = charArrayOf('p','r','k','b','q','a')
+private val UPPER_CASE_LETTERS = charArrayOf('P','R','K','B','Q','A')
 
-    for(n in 2..5) BOARD[n] = charArrayOf(' ',' ',' ',' ',' ',' ',' ',' ')
+private val PIECES = arrayOf("pawn","rook","knight","bishop","queen","king")
+private val TEAM = arrayOf("white","black")
 
-    BOARD[1] = charArrayOf('P','P','P','P','P','P','P','P')
+fun resetBoard() {
     BOARD[0] = charArrayOf('R','K','B','Q','A','B','K','R')
+    BOARD[1] = charArrayOf('P','P','P','P','P','P','P','P')
+    BOARD[6] = charArrayOf('p','p','p','p','p','p','p','p')
+    BOARD[7] = charArrayOf('r','k','b','q','a','b','k','r')
+    for(n in 2..5) BOARD[n] = charArrayOf(' ',' ',' ',' ',' ',' ',' ',' ')
 }
 
 fun printBoard(){
@@ -48,88 +49,64 @@ fun printBoard(){
 fun printBoardSmall(){
     for(x in 7 downTo 0){
         print("" + (1+x) + "  | ")
-        for(y in 0..7){
-            print(BOARD[x][y] + " | ")
-        }
+        for(y in 0..7) print(BOARD[x][y] + " | ")
         println("")
     }
     println("     a   b   c   d   e   f   g   h")
 }
 
 fun main() = application {
+
     val input = Scanner(System.`in`)
-    //remove comments in main to run UI
     Window(onCloseRequest = ::exitApplication) {
-        inicialBoard()
-        board()
+        resetBoard()
+        ui()
         printBoardSmall()
         //round()
-        //printBoardSmall()
     }
 }
 
 @Composable
-fun board() {
-    var squarepair = false
+fun ui() {
+    var squarePair = false
     var colorSquare: Color
-
     Column {
         for(n in 1..8) {
             Row {
                 for (i in 1..8) {
-                    colorSquare = if (!squarepair) FIRSTCOLOR
-                    else SECONDCOLOR
+                    colorSquare = if (!squarePair) FIRST_COLOR
+                    else SECOND_COLOR
                     Box {
                         Spacer(Modifier.size(65.dp).background(colorSquare)
                             .clickable(onClick = { })
                         )
-                        if (BOARD[n-1][i-1] != ' ') {
-                            Image(
-                                painter = painterResource("Chess_rdt60.png"),
-                                contentDescription = "image"//,
-                                //contentScale = ContentScale.FillBounds
-                            )
-                        }
+                        if(BOARD[n-1][i-1] != ' ') board(n,i)
                     }
-                    squarepair =!squarepair
+                    squarePair =!squarePair
                 }
-                squarepair =!squarepair
+                squarePair =!squarePair
             }
         }
-/*
-        val imageModifier = Modifier
-            .height(240.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
+    }
+}
 
-        Image(bitmap = useResource("image.png") { loadImageBitmap(it) },
-            "image",
-            imageModifier,
-            contentScale = ContentScale.Fit)*/
-
-
-        /*val imageModifier = Modifier
-            .height(240.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-
-        Image(painter = painterResource("image.png"),
-            contentDescription = "image",
-            imageModifier,
-            contentScale = ContentScale.Fit
-        )*/
-
+@Composable
+fun board(n: Int, i: Int){
+    var team = ""
+    if(isLowerCase(BOARD[n-1][i-1])) team = TEAM[0]
+    if(isUpperCase(BOARD[n-1][i-1])) team = TEAM[1]
+    for(k in LOWER_CASE_LETTERS.indices) {
+        if (BOARD[n - 1][i - 1] == LOWER_CASE_LETTERS[k] || BOARD[n - 1][i - 1] == UPPER_CASE_LETTERS[k]) {
+            Image(
+                painter = painterResource(team + "_" + PIECES[k] + ".png"),
+                contentDescription = PIECES[k]
+            )
+        }
     }
 }
 
 fun selectPiece(){
 
-}
-
-fun checkPiece(n: Int, l: Char): Char{
-    val y = Character.getNumericValue(l+1)-Character.getNumericValue('a')
-    val d = BOARD[n-1][y]
-    return BOARD[n-1][y]
 }
 
 fun round(){
@@ -139,15 +116,14 @@ fun round(){
 
 fun algebraicNotation(position: String){
     val pastPos = "" + position.subSequence(0, 2)
-
     if(isEmpty(pastPos)) {
         println("Can't Print")
         return
     }
+    val nextPos = "" + position.subSequence(3, 5)
+
     //TODO: CHECK IF PIECE THERE AND TO WHICH POSITIONS IT CAN MOVE
     //check if piece from current player
-
-    val nextPos = "" + position.subSequence(3, 5)
 
     move(pastPos,nextPos)
 }
@@ -179,12 +155,8 @@ fun getPosition(): String{
     return position
 }
 
-fun isChar(c: Char): Boolean{
-    return c in 'A'..'Z' || c in 'a'..'z'
-}
-
-fun isInt(n: Char): Boolean{
-    return n in '0'..'9'
+fun checkPiece(n: Int,l: Char): Char{
+    return BOARD[n-1][Character.getNumericValue(l+1)-Character.getNumericValue('a')]
 }
 
 fun isEmpty(pos: String): Boolean {
@@ -192,10 +164,11 @@ fun isEmpty(pos: String): Boolean {
     return checkPiece(n,pos[0]) == ' '
 }
 
-fun isUpperCase(c: Char): Boolean{
-    return c in 'A'..'Z'
-}
+fun isInt(n: Char): Boolean{ return n in '0'..'9' }
+fun isChar(c: Char): Boolean{ return c in 'A'..'Z' || c in 'a'..'z' }
 
-fun convertToLowerCase(char: Char): Char {
-    return char + 32
-}
+fun isLowerCase(c: Char): Boolean{ return c in 'a'..'z' }
+fun isUpperCase(c: Char): Boolean{ return c in 'A'..'Z' }
+
+fun convertToLowerCase(char: Char): Char { return char + 32 }
+fun convertToUpperCase(char: Char): Char { return char - 32 }
