@@ -29,7 +29,10 @@ private val TEAM = arrayOf("white","black")
 private val SIZE_TILE = 65.dp
 private val FONT_SIZE_BOARD = 30.sp
 
-private var BOARD = Array(8) { CharArray(8) }
+var BOARD = Array(8) { CharArray(8) }
+
+val utils = Utils()
+val notations = Notations()
 
 fun resetBoard() {
     BOARD[0] = charArrayOf('R','K','B','Q','A','B','K','R')
@@ -126,8 +129,8 @@ fun ui() {
 @Composable
 fun board(n: Int, i: Int){
     var team = ""
-    if(isUpperCase(BOARD[n-1][i-1])) team = TEAM[0]
-    if(isLowerCase(BOARD[n-1][i-1])) team = TEAM[1]
+    if(utils.isUpperCase(BOARD[n-1][i-1])) team = TEAM[0]
+    if(utils.isLowerCase(BOARD[n-1][i-1])) team = TEAM[1]
 
     for(k in LOWER_CASE_LETTERS.indices) {
         if (BOARD[n-1][i-1] == LOWER_CASE_LETTERS[k] || BOARD[n-1][i-1] == UPPER_CASE_LETTERS[k]) {
@@ -158,22 +161,8 @@ fun selectPiece(){
 }
 
 fun round(){
-    algebraicNotation(getPosition())
+    notations.algebraicNotation(getPosition())
 
-}
-
-fun algebraicNotation(position: String){
-    val pastPos = "" + position.subSequence(0, 2)
-    if(isEmpty(pastPos)) {
-        println("Can't Print")
-        return
-    }
-    val nextPos = "" + position.subSequence(3, 5)
-
-    //TODO: CHECK IF PIECE THERE AND TO WHICH POSITIONS IT CAN MOVE
-    //check if piece from current player
-
-    move(pastPos,nextPos)
 }
 
 fun move(pastPos: String, nextPos: String) {
@@ -189,16 +178,11 @@ fun move(pastPos: String, nextPos: String) {
     BOARD[xNextPos][yNextPos] = piece
 }
 
-/*fun checkValidPlay(piece: Char, pastPos: String, nextPos: String): Boolean{
-
-    return false
-}*/
-
 fun getPosition(): String{
     var position: String
     do{
         position = readLine()!!
-    }while(position.length!=5 && isChar(position[0]) && isInt(position[1]) && isChar(position[3]) && isInt(position[4]))
+    }while(position.length!=5 && utils.isChar(position[0]) && utils.isInt(position[1]) && utils.isChar(position[3]) && utils.isInt(position[4]))
     //working for Algebraic Notation only (for now)
     return position
 }
@@ -206,17 +190,3 @@ fun getPosition(): String{
 fun checkPiece(n: Int,l: Char): Char{
     return BOARD[n-1][Character.getNumericValue(l+1)-Character.getNumericValue('a')]
 }
-
-fun isEmpty(pos: String): Boolean {
-    val n = (pos[1]) - '0'
-    return checkPiece(n,pos[0]) == ' '
-}
-
-fun isInt(n: Char): Boolean{ return n in '0'..'9' }
-fun isChar(c: Char): Boolean{ return c in 'A'..'Z' || c in 'a'..'z' }
-
-fun isLowerCase(c: Char): Boolean{ return c in 'a'..'z' }
-fun isUpperCase(c: Char): Boolean{ return c in 'A'..'Z' }
-
-fun convertToLowerCase(char: Char): Char { return char + 32 }
-fun convertToUpperCase(char: Char): Char { return char - 32 }
