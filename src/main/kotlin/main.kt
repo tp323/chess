@@ -74,7 +74,6 @@ fun main() = application {
         ui()
         //round()
         //printBoardSmall()
-        //ui()
     }
 
 }
