@@ -34,6 +34,10 @@ var BOARD = Array(8) { CharArray(8) }
 val utils = Utils()
 val notations = Notations()
 
+//round pair -> white round not pair -> black
+var checkMate = false
+var player = true
+
 fun resetBoard() {
     BOARD[0] = charArrayOf('R','K','B','Q','A','B','K','R')
     BOARD[1] = charArrayOf('P','P','P','P','P','P','P','P')
@@ -65,17 +69,12 @@ fun printBoardSmall(){
 }
 
 fun main() = application {
-
-    //val input = Scanner(System.`in`)
     resetBoard()
     printBoardSmall()
-
     Window(onCloseRequest = ::exitApplication, icon = painterResource("black_knight.png"), title = "Chess") {
         ui()
-        //round()
-        //printBoardSmall()
+        game()
     }
-
 }
 
 @Composable
@@ -159,31 +158,46 @@ fun selectPiece(){
 
 }
 
-fun round(){
-    notations.algebraicNotation(getPosition())
+fun game(){ while(!checkMate){ round() } }
 
+fun round(){
+    if(notations.algebraicNotation(getPosition())){
+        player = !player
+        printBoardSmall()
+    }
 }
 
 fun move(pastPos: String, nextPos: String) {
-    val yPastPos = Character.getNumericValue(pastPos[0])-Character.getNumericValue('a')
-    val xPastPos = (pastPos[1]) - '1'
-
-    val piece = BOARD[xPastPos][yPastPos]
-    BOARD[xPastPos][yPastPos] = ' '
-
-    val yNextPos = Character.getNumericValue(nextPos[0])-Character.getNumericValue('a')
-    val xNextPos = (nextPos[1]) - '1'
-
-    BOARD[xNextPos][yNextPos] = piece
+    val piece = coordinates(pastPos)
+    BOARD[coordinateX(pastPos)][coordinateY(pastPos)] = ' '
+    BOARD[coordinateX(nextPos)][coordinateY(nextPos)] = piece
 }
+
+fun coordinateY(pos: String): Int{ return Character.getNumericValue(pos[0])-Character.getNumericValue('a') }
+
+fun coordinateX(pos: String): Int{ return (pos[1]) - '1'}
+
+fun coordinates(pos: String): Char{ return BOARD[coordinateX(pos)][coordinateY(pos)] }
 
 fun getPosition(): String{
     var position: String
     do{
         position = readLine()!!
-    }while(position.length!=5 && utils.isChar(position[0]) && utils.isInt(position[1]) && utils.isChar(position[3]) && utils.isInt(position[4]))
+        val t = position.length!=5 || !algebraicNotationCheck(position)
+    }while(t)
     //working for Algebraic Notation only (for now)
     return position
+}
+
+fun algebraicNotationCheck(position: String): Boolean{
+    val pastPos = utils.isChar(position[0]) && utils.isInt(position[1])
+    val nextPos = utils.isChar(position[3]) && utils.isInt(position[4])
+    val bol = pastPos && nextPos
+    if (!bol){
+        println("Isn't in Algebraic Notation")
+        return false
+    }
+    return true
 }
 
 fun checkPiece(n: Int,l: Char): Char{
