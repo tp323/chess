@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
 private val FIRST_COLOR = Color.LightGray
@@ -31,7 +30,7 @@ private val FONT_SIZE_BOARD = 30.sp
 
 var BOARD = Array(8) { CharArray(8) }
 
-val utils = Utils()
+val utils = UtilsChess()
 val notations = Notations()
 
 //round pair -> white round not pair -> black
@@ -71,10 +70,14 @@ fun printBoardSmall(){
 fun main() = application {
     resetBoard()
     printBoardSmall()
-    Window(onCloseRequest = ::exitApplication, icon = painterResource("black_knight.png"), title = "Chess") {
+    /*Window(onCloseRequest = ::exitApplication, icon = painterResource("black_knight.png"), title = "Chess") {
         ui()
-        game()
-    }
+    }*/
+    /*val gamePiece = GamePiece()
+    gamePiece.team = utils.isUpperCase(BOARD[1][1])
+    gamePiece.piece = utils.convertToLowerCase(BOARD[1][1])
+    gamePiece.possibleMoves()*/
+    game()
 }
 
 @Composable
@@ -127,8 +130,8 @@ fun ui() {
 @Composable
 fun board(n: Int, i: Int){
     var team = ""
-    if(utils.isUpperCase(BOARD[n-1][i-1])) team = TEAM[0]
-    if(utils.isLowerCase(BOARD[n-1][i-1])) team = TEAM[1]
+    if(utils.isWhite(BOARD[n-1][i-1])) team = TEAM[0]
+    if(utils.isBlack(BOARD[n-1][i-1])) team = TEAM[1]
 
     for(k in LOWER_CASE_LETTERS.indices) {
         if (BOARD[n-1][i-1] == LOWER_CASE_LETTERS[k] || BOARD[n-1][i-1] == UPPER_CASE_LETTERS[k]) {
