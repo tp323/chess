@@ -1,9 +1,6 @@
-class GamePiece {
-    var team = true
-    var piece = ' '
-    var pastPosX = -1
-    var pastPosY = -1
-
+class GamePiece(
+    //team = true is WHITE team = false is BLACK
+    var team: Boolean, var piece: Char, var pastPosX: Int, var pastPosY: Int) {
 
     fun piece() {
         when (piece) {
@@ -32,9 +29,21 @@ class GamePiece {
     private fun movePawn(x: Int, y: Int): Boolean {
         if (!insideBoard(x,y)) return false
         //Normal Move
-        if (x == pastPosX + 1 && y == pastPosY && BOARD[x][y] == ' ') return true
+        if (team && x == pastPosX + 1 && y == pastPosY && BOARD[x][y] == ' ') return true
+        if (!team && x == pastPosX - 1 && y == pastPosY && BOARD[x][y] == ' ') return true
+
+        //first move 2 cells
+        //TODO: Move 2 cells in the case that it's the first move (need to track if piece has already move)
+        //if piece is still on the line were its team pawns start it still hasn't moved for WHITE line 2 and for BLACK line 7
+        var teamStartingLine = 6
+        if (team) teamStartingLine = 1
+        if (team && x == pastPosX + 2 && y == pastPosY && pastPosY == teamStartingLine && BOARD[x][y] == ' ' && BOARD[x-1][y-1] == ' ') return true
+        //not working on black
+        if (!team && x == pastPosX - 2 && y == pastPosY && pastPosY == teamStartingLine && BOARD[x][y] == ' ' && BOARD[x+1][y+1] == ' ') return true
+
+
         //Capture
-        if (x == pastPosX + 1 && (y == pastPosY + 1 || y == pastPosY - 1) && team != utils.isWhite(BOARD[x][y])) return true
+        if (x == pastPosX+1 && (y == pastPosY+1 || y == pastPosY-1) && team != utils.isWhite(BOARD[x][y])) return true
         return false
     }
 

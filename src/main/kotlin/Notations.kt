@@ -5,26 +5,32 @@ class Notations {
 
         if(utils.isEmpty(pastPos)) {
             println("Can't Print")
-printBoardSmall()
             return false
         }
         val nextPos = "" + position.subSequence(3, 5)
 
         //TODO: CHECK IF PIECE THERE AND TO WHICH POSITIONS IT CAN MOVE
-        val GamePiece = GamePiece()
-        GamePiece.team = utils.isWhite(coordinates(pastPos))
+        /*val gamePiece = GamePiece(utils.isWhite(coordinates(pastPos)),BOARD[coordinateX(pastPos)][coordinateY(pastPos)],coordinateX(pastPos))
 
-        /*if(player != utils.isUpperCase(coordinates(pastPos))) {
-            println("Not Current Player")
-            return false
-        }*/
+        gamePiece.team =
 
-        if(player != GamePiece.team) {
+
+        if (gamePiece.team) gamePiece.piece = utils.convertToLowerCase(piece)
+        if (!gamePiece.team) gamePiece.piece = piece
+
+        gamePiece.pastPosX = coordinateX(pastPos)
+        gamePiece.pastPosY = coordinateY(pastPos)*/
+
+        /*if(player != gamePiece.team) {
             println("Not Current Player")
             return false
         }
 
-        move(pastPos,nextPos)
+        if (gamePiece.possibleMoves(coordinateX(nextPos),coordinateY(nextPos))) move(pastPos,nextPos)
+        else {
+            println("Move is Not Possible")
+            return false
+        }*/
         return true
     }
 }

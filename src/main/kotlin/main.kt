@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
 private val FIRST_COLOR = Color.LightGray
@@ -27,6 +28,7 @@ private val TEAM = arrayOf("white","black")
 
 private val SIZE_TILE = 65.dp
 private val FONT_SIZE_BOARD = 30.sp
+
 
 var BOARD = Array(8) { CharArray(8) }
 
@@ -70,14 +72,11 @@ fun printBoardSmall(){
 fun main() = application {
     resetBoard()
     printBoardSmall()
-    /*Window(onCloseRequest = ::exitApplication, icon = painterResource("black_knight.png"), title = "Chess") {
+    Window(onCloseRequest = ::exitApplication, icon = painterResource("black_knight.png"), title = "Chess") {
         ui()
-    }*/
-    /*val gamePiece = GamePiece()
-    gamePiece.team = utils.isUpperCase(BOARD[1][1])
-    gamePiece.piece = utils.convertToLowerCase(BOARD[1][1])
-    gamePiece.possibleMoves()*/
-    game()
+        //game()
+    }
+    //game()
 }
 
 @Composable
@@ -205,4 +204,42 @@ fun algebraicNotationCheck(position: String): Boolean{
 
 fun checkPiece(n: Int,l: Char): Char{
     return BOARD[n-1][Character.getNumericValue(l+1)-Character.getNumericValue('a')]
+}
+
+fun createGamePieces(){
+    //TODO: define each piece here to be able to track first move on pawns
+    val pw1 = GamePiece(true,'p',0,1)
+    val pw2 = GamePiece(true,'p',1,1)
+    val pw3 = GamePiece(true,'p',2,1)
+    val pw4 = GamePiece(true,'p',3,1)
+    val pw5 = GamePiece(true,'p',4,1)
+    val pw6 = GamePiece(true,'p',5,1)
+    val pw7 = GamePiece(true,'p',6,1)
+    val pw8 = GamePiece(true,'p',7,1)
+    val rw1 = GamePiece(true,'r',0,0)
+    val rw2 = GamePiece(true,'r',7,0)
+    val kw1 = GamePiece(true,'k',1,0)
+    val kw2 = GamePiece(true,'k',6,0)
+    val bw1 = GamePiece(true,'b',2,0)
+    val bw2 = GamePiece(true,'b',5,0)
+    val qw = GamePiece(true,'q',3,0)
+    val aw = GamePiece(true,'a',4,0)
+
+    val pb1 = GamePiece(false,'p',0,6)
+    val pb2 = GamePiece(false,'p',1,6)
+    val pb3 = GamePiece(false,'p',2,6)
+    val pb4 = GamePiece(false,'p',3,6)
+    val pb5 = GamePiece(false,'p',4,6)
+    val pb6 = GamePiece(false,'p',5,6)
+    val pb7 = GamePiece(false,'p',6,6)
+    val pb8 = GamePiece(false,'p',7,6)
+    val rb1 = GamePiece(false,'r',0,7)
+    val rb2 = GamePiece(false,'r',7,7)
+    val kb1 = GamePiece(false,'k',1,7)
+    val kb2 = GamePiece(false,'k',6,7)
+    val bb1 = GamePiece(false,'b',2,7)
+    val bb2 = GamePiece(false,'b',5,7)
+    val qb = GamePiece(false,'q',3,7)
+    val ab = GamePiece(false,'a',4,7)
+
 }
