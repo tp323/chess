@@ -1,21 +1,17 @@
 
-*.at
+/.gradle
+/.idea
+/build
+/gradle
+/out
 *.at
 *.len
 *.keystream
-*.len
 *.tab
 *.bin
 *.lock
-*.bin
-*.lock
-*.bin
 *.class
-*.tab
 *.tab_i
 *.s
 *.values
-*.s
-*.keystream
-*.tab_i
-*.len
+!/build.gradle.kts
