@@ -1,8 +1,9 @@
-class UtilsChess {
+package chess
+
 
     fun isEmpty(pos: String): Boolean {
         val n = (pos[1]) - '0'
-        return checkPiece(n,pos[0]) == ' '
+        return checkPiece(n, pos[0]) == ' '
     }
 
     fun isInt(n: Char): Boolean{ return n in '0'..'9' }
@@ -13,4 +14,3 @@ class UtilsChess {
 
     fun convertToLowerCase(char: Char): Char { return char + 32 }
     fun convertToUpperCase(char: Char): Char { return char - 32 }
-}

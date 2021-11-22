@@ -1,2 +1,4 @@
+package chess
+
 class Visuals {
 }

@@ -1,3 +1,5 @@
+package chess
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -5,8 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -15,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import kotlin.concurrent.thread
 
 private val FIRST_COLOR = Color.LightGray
 private val SECOND_COLOR = Color.DarkGray
@@ -32,10 +37,8 @@ private val FONT_SIZE_BOARD = 30.sp
 
 var BOARD = Array(8) { CharArray(8) }
 
-val utils = UtilsChess()
-val notations = Notations()
 
-//round pair -> white round not pair -> black
+//chess.round pair -> white chess.round not pair -> black
 var checkMate = false
 var player = true
 
@@ -45,19 +48,6 @@ fun resetBoard() {
     BOARD[6] = charArrayOf('p','p','p','p','p','p','p','p')
     BOARD[7] = charArrayOf('r','k','b','q','a','b','k','r')
     for(n in 2..5) BOARD[n] = charArrayOf(' ',' ',' ',' ',' ',' ',' ',' ')
-}
-
-fun printBoard(){
-    for(x in 0..7){
-        println("   +---+---+---+---+---+---+---+---+")
-        print("" + (8-x) + "  | ")
-        for(y in 7 downTo 1){
-            print(BOARD[x][y] + " | ")
-        }
-        println("")
-    }
-    println("   +---+---+---+---+---+---+---+---+")
-    println("     a   b   c   d   e   f   g   h")
 }
 
 fun printBoardSmall(){
@@ -74,9 +64,9 @@ fun main() = application {
     printBoardSmall()
     Window(onCloseRequest = ::exitApplication, icon = painterResource("black_knight.png"), title = "Chess") {
         ui()
-        //game()
     }
-    //game()
+    thread { game() }
+
 }
 
 @Composable
@@ -111,11 +101,10 @@ fun ui() {
         }
         Column {
             Text("   Play", textAlign = TextAlign.Center, fontSize = 30.sp)
-            var move = ""
-            //var move by remember { mutableStateOf("") }
+            val move = remember { mutableStateOf("Play")}
             TextField(
-                value = move,
-                onValueChange = { move = it },
+                value = move.value,
+                onValueChange = { move.value = it },
                 label = { Text("Move") },
                 maxLines = 1,
                 textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold),
@@ -126,11 +115,12 @@ fun ui() {
     }
 }
 
+
 @Composable
 fun board(n: Int, i: Int){
     var team = ""
-    if(utils.isWhite(BOARD[n-1][i-1])) team = TEAM[0]
-    if(utils.isBlack(BOARD[n-1][i-1])) team = TEAM[1]
+    if(isWhite(BOARD[n-1][i-1])) team = TEAM[0]
+    if(isBlack(BOARD[n-1][i-1])) team = TEAM[1]
 
     for(k in LOWER_CASE_LETTERS.indices) {
         if (BOARD[n-1][i-1] == LOWER_CASE_LETTERS[k] || BOARD[n-1][i-1] == UPPER_CASE_LETTERS[k]) {
@@ -163,7 +153,7 @@ fun selectPiece(){
 fun game(){ while(!checkMate){ round() } }
 
 fun round(){
-    if(notations.algebraicNotation(getPosition())){
+    if(algebraicNotation(getPosition())){
         player = !player
         printBoardSmall()
     }
@@ -192,8 +182,8 @@ fun getPosition(): String{
 }
 
 fun algebraicNotationCheck(position: String): Boolean{
-    val pastPos = utils.isChar(position[0]) && utils.isInt(position[1])
-    val nextPos = utils.isChar(position[3]) && utils.isInt(position[4])
+    val pastPos = isChar(position[0]) && isInt(position[1])
+    val nextPos = isChar(position[3]) && isInt(position[4])
     val bol = pastPos && nextPos
     if (!bol){
         println("Isn't in Algebraic Notation")
@@ -207,7 +197,7 @@ fun checkPiece(n: Int,l: Char): Char{
 }
 
 fun createGamePieces(){
-    //TODO: define each piece here to be able to track first move on pawns
+    //TODO: define each piece here to be able to track first chess.move on pawns
     val pw1 = GamePiece(true,'p',0,1)
     val pw2 = GamePiece(true,'p',1,1)
     val pw3 = GamePiece(true,'p',2,1)

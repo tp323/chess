@@ -1,3 +1,5 @@
+package chess
+
 class GamePiece(
     //team = true is WHITE team = false is BLACK
     var team: Boolean, var piece: Char, var pastPosX: Int, var pastPosY: Int) {
@@ -32,8 +34,8 @@ class GamePiece(
         if (team && x == pastPosX + 1 && y == pastPosY && BOARD[x][y] == ' ') return true
         if (!team && x == pastPosX - 1 && y == pastPosY && BOARD[x][y] == ' ') return true
 
-        //first move 2 cells
-        //TODO: Move 2 cells in the case that it's the first move (need to track if piece has already move)
+        //first chess.move 2 cells
+        //TODO: Move 2 cells in the case that it's the first chess.move (need to track if piece has already chess.move)
         //if piece is still on the line were its team pawns start it still hasn't moved for WHITE line 2 and for BLACK line 7
         var teamStartingLine = 6
         if (team) teamStartingLine = 1
@@ -43,7 +45,7 @@ class GamePiece(
 
 
         //Capture
-        if (x == pastPosX+1 && (y == pastPosY+1 || y == pastPosY-1) && team != utils.isWhite(BOARD[x][y])) return true
+        if (x == pastPosX+1 && (y == pastPosY+1 || y == pastPosY-1) && team != isWhite(BOARD[x][y])) return true
         return false
     }
 
