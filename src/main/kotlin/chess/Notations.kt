@@ -1,41 +1,20 @@
 package chess
 
-fun algebraicNotation(position: String): Boolean {
-    val pastPos = "" + position.subSequence(0, 2)
-
-    if (isEmpty(pastPos)) {
-        println("Can't Print")
+fun algebraicNotationCheck(position: String): Boolean{
+    if (position.length!=5) {
+        println("Wrong size String for Algebraic Notation")
         return false
     }
-    val nextPos = "" + position.subSequence(3, 5)
-
-    //TODO: CHECK IF PIECE THERE AND TO WHICH POSITIONS IT CAN MOVE
-    val gamePiece = GamePiece(
-        isWhite(coordinates(pastPos)),
-        BOARD[coordinateX(pastPos)][coordinateY(pastPos)],
-        coordinateX(pastPos),
-        coordinateY(pastPos)
-    )
-
-    gamePiece.team = player
-    val piece = BOARD[coordinateX(pastPos)][coordinateY(pastPos)]
-
-    if (gamePiece.team) gamePiece.piece = convertToLowerCase(piece)
-    if (!gamePiece.team) gamePiece.piece = piece
-
-    gamePiece.pastPosX = coordinateX(pastPos)
-    gamePiece.pastPosY = coordinateY(pastPos)
-
-    if (player != gamePiece.team) {
-        println("Not Current Player")
+    val pastPos = isChar(position[0]) && isInt(position[1])
+    val nextPos = isChar(position[3]) && isInt(position[4])
+    val algebraicChecker = pastPos && nextPos
+    if (!algebraicChecker){
+        println("Isn't in Algebraic Notation")
         return false
     }
-
-    if (gamePiece.possibleMoves(coordinateX(nextPos), coordinateY(nextPos))) move(pastPos, nextPos)
-    else {
-        println("Move is Not Possible")
-        return false
+    for (n in 0..1) {
+        if (position[n*3] !in 'a'..'h') return false
+        if (position[1 + n * 3] !in '1'..'8') return false
     }
     return true
-
 }
