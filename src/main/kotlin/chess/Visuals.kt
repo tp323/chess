@@ -1,11 +1,7 @@
 package chess
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.isTypedEvent
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -25,13 +21,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 private val FIRST_COLOR = Color.LightGray
 private val SECOND_COLOR = Color.DarkGray
 private val PIECES = arrayOf("pawn","rook","knight","bishop","queen","king")
 private val TEAM = arrayOf("white","black")
 private val SIZE_TILE = 65.dp
 private val FONT_SIZE_BOARD = 30.sp
+val moves: MutableList<String> = mutableListOf<String>()
 
 
 //@OptIn(ExperimentalComposeUiApi::class)
@@ -86,7 +82,10 @@ fun ui() {
                         if (keyEvent.key != Key.Enter) return@onKeyEvent false
                         //if (keyEvent.type == KeyEventType.KeyUp) println(move.value)
                         if (keyEvent.key==Key.Enter && move.value!="") {
-                            println(move.value)
+                            //if(algebraicNotationCheck(move.value)) {
+                                println(move.value)
+                                moves.add(move.value)
+                            //}else
                             move.value = ""
                         }
                         true
@@ -94,11 +93,17 @@ fun ui() {
                     .focusRequester(requester)
                     .focusable()
             )
+            //Box{
+                moves.forEach{ Text(it, modifier = Modifier.padding(20.dp)) }
+            //}
         }
     }
 }
 
-//fun test(){}
+@Composable
+fun scrollList(products: List<String>) {
+
+}
 
 @Composable
 fun board(n: Int, i: Int){
