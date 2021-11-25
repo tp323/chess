@@ -1,6 +1,5 @@
 package chess
 
-
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -9,23 +8,12 @@ import kotlin.concurrent.thread
 // 'a' -> king  CAPS -> WHITE
 val LOWER_CASE_LETTERS = charArrayOf('p','r','k','b','q','a')
 val UPPER_CASE_LETTERS = charArrayOf('P','R','K','B','Q','A')
-
-
-
 var BOARD = Array(8) { CharArray(8) }
 
 
-//chess.round pair -> white chess.round not pair -> black
+//round pair -> white round not pair -> black
 var checkMate = false
 var player = true
-
-fun resetBoard() {
-    BOARD[0] = charArrayOf('R','K','B','Q','A','B','K','R')
-    BOARD[1] = charArrayOf('P','P','P','P','P','P','P','P')
-    BOARD[6] = charArrayOf('p','p','p','p','p','p','p','p')
-    BOARD[7] = charArrayOf('r','k','b','q','a','b','k','r')
-    for(n in 2..5) BOARD[n] = charArrayOf(' ',' ',' ',' ',' ',' ',' ',' ')
-}
 
 fun printBoardSmall(){
     for(x in 7 downTo 0){
@@ -47,10 +35,6 @@ fun main() = application {
 
 }
 
-
-fun selectPiece(){
-
-}
 
 fun game(){
     println("Use Algebraic Notation")
@@ -87,7 +71,6 @@ fun getPosition(): String{
         position = readLine()!!
         val t = !algebraicNotationCheck(position)
     }while(t)
-    //working for Algebraic Notation only (for now)
     return position
 }
 

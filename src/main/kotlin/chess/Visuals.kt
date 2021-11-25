@@ -3,15 +3,21 @@ package chess
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.isTypedEvent
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -19,16 +25,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 private val FIRST_COLOR = Color.LightGray
 private val SECOND_COLOR = Color.DarkGray
-
 private val PIECES = arrayOf("pawn","rook","knight","bishop","queen","king")
 private val TEAM = arrayOf("white","black")
-
 private val SIZE_TILE = 65.dp
 private val FONT_SIZE_BOARD = 30.sp
 
 
+//@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ui() {
     var squarePair = false
@@ -60,6 +67,12 @@ fun ui() {
             }
         }
         Column {
+            val requester = remember { FocusRequester() }
+
+            LaunchedEffect(Unit) {
+                requester.requestFocus()
+            }
+
             Text("   Play", textAlign = TextAlign.Center, fontSize = 30.sp)
             val move = remember { mutableStateOf("Play") }
             TextField(
@@ -69,8 +82,18 @@ fun ui() {
                 maxLines = 1,
                 textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(20.dp)
+                    .onKeyEvent { keyEvent ->
+                        if (keyEvent.key != Key.Enter) return@onKeyEvent false
+                        //if (keyEvent.type == KeyEventType.KeyUp) println(move.value)
+                        if (keyEvent.key==Key.Enter && move.value!="") {
+                            println(move.value)
+                            move.value = ""
+                        }
+                        true
+                    }
+                    .focusRequester(requester)
+                    .focusable()
             )
-            println(move.value)
         }
     }
 }
